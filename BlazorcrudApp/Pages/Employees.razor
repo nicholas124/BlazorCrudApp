@@ -1,0 +1,71 @@
+﻿
+@page "/Employees"
+@using BlazorcrudApp.Data
+@inject EmployeeService employeeService
+@inject NavigationManager NavigationManager
+
+<NavLink class="nav-link" href="AddEmployee">
+    <span class="oi oi-plus" aria-hidden="true">Add New</span>
+
+</NavLink>
+
+
+
+
+<h1>Employee Info</h1>
+@if (EmpObj is null)
+{
+    <p><em>Loading... !</em></p>
+}
+else
+{
+
+    <Radzen.Blazor.RadzenGrid AllowSorting="true" AllowPaging="true" PageSize="10" AllowFiltering="true" Data="@EmpObj" TItem="Employee" ColumnWidth="150px" FilterCaseSensitivity="Radzen.FilterCaseSensitivity.CaseInsensitive">
+        <Columns>
+            <Radzen.Blazor.RadzenGridColumn TItem="Employee" Property="Id" Title="Id">  </Radzen.Blazor.RadzenGridColumn>
+            <Radzen.Blazor.RadzenGridColumn TItem="Employee" Property="EmployeName" Title="Employe Name">   </Radzen.Blazor.RadzenGridColumn>
+            <Radzen.Blazor.RadzenGridColumn TItem="Employee" Property="EmployeName" Title="Employe Name"></Radzen.Blazor.RadzenGridColumn>
+            <Radzen.Blazor.RadzenGridColumn TItem="Employee" Property="Gender" Title="Gender"></Radzen.Blazor.RadzenGridColumn>
+            <Radzen.Blazor.RadzenGridColumn TItem="Employee" Property="Designation" Title="Designation"></Radzen.Blazor.RadzenGridColumn>
+            <Radzen.Blazor.RadzenGridColumn TItem="Employee" Property="City" Title="City"></Radzen.Blazor.RadzenGridColumn>
+
+            <RadzenGridColumn TItem="Employee" Context="Id" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="100px">
+                <Template Context="Id">
+                    <RadzenButton Icon="edit" Size="ButtonSize.Small" Click="@(args => move(Id.Id))"> </RadzenButton>
+                </Template>
+            </RadzenGridColumn>
+
+            <RadzenGridColumn TItem="Employee" Context="emp" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="100px">
+                <Template Context="emp">
+                    <RadzenButton Icon="close" Size="ButtonSize.Small" Click="@(args => delete(emp.Id))"> </RadzenButton>
+                </Template>
+            </RadzenGridColumn>
+
+        </Columns>
+
+
+    </Radzen.Blazor.RadzenGrid>
+
+
+}
+
+
+
+
+@code {
+    Employee[] EmpObj;
+    protected override async Task OnInitializedAsync()
+    {
+        EmpObj = await Task.Run(() => employeeService.GetAllEmployeesAsync());
+    }
+
+    public void delete(int id)
+    {
+        NavigationManager.NavigateTo($"Delete/{id}");
+    }
+    public void move(int id)
+    {
+        NavigationManager.NavigateTo($"EditEmployee/{id}");
+    }
+
+}
